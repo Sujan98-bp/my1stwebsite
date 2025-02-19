@@ -176,45 +176,44 @@ class BengaliCalendar {
         // Clear previous calendar
         this.calendarDays.innerHTML = '';
 
-        // Add empty cells for days before the first day of the month
+        // Add empty cells for days before start of month
         for (let i = 0; i < startingDay; i++) {
             const emptyCell = document.createElement('div');
-            emptyCell.className = 'calendar-day empty';
+            emptyCell.classList.add('day');
             this.calendarDays.appendChild(emptyCell);
         }
 
         // Add days of the month
         for (let day = 1; day <= totalDays; day++) {
             const dayCell = document.createElement('div');
-            dayCell.className = 'calendar-day';
-
-            // Check if it's today
-            const currentDate = new Date();
-            if (day === currentDate.getDate() && 
-                this.displayedMonth === currentDate.getMonth() && 
-                this.displayedYear === currentDate.getFullYear()) {
-                dayCell.classList.add('today');
-            }
-
-            // Create date for this day
-            const thisDate = new Date(this.displayedYear, this.displayedMonth, day);
-            const bengaliMonth = this.getBengaliMonth(thisDate);
-
-            // Add Bengali date with month
-            const bengaliDateDiv = document.createElement('div');
-            bengaliDateDiv.className = 'bengali-date';
-            bengaliDateDiv.innerHTML = `
-                <span class="date-number">${this.toBengaliNumber(day)}</span>
-                <span class="month-name">${bengaliMonth}</span>
-            `;
-
+            dayCell.classList.add('day');
+            
+            // Create container for both dates
+            const dateContainer = document.createElement('div');
+            dateContainer.classList.add('date-container');
+            
             // Add English date
-            const englishDateDiv = document.createElement('div');
-            englishDateDiv.className = 'english-date';
-            englishDateDiv.textContent = day;
+            const englishDate = document.createElement('div');
+            englishDate.classList.add('english-date');
+            englishDate.textContent = day;
+            
+            // Add Bengali date
+            const bengaliDate = document.createElement('div');
+            bengaliDate.classList.add('bengali-date');
+            const currentDate = new Date(this.displayedYear, this.displayedMonth, day);
+            bengaliDate.textContent = this.getBengaliDate(currentDate);
+            
+            // Add dates to container
+            dateContainer.appendChild(englishDate);
+            dateContainer.appendChild(bengaliDate);
+            dayCell.appendChild(dateContainer);
 
-            dayCell.appendChild(bengaliDateDiv);
-            dayCell.appendChild(englishDateDiv);
+            // Highlight current date
+            if (day === this.currentDate.getDate() && 
+                this.displayedMonth === this.currentDate.getMonth() && 
+                this.displayedYear === this.currentDate.getFullYear()) {
+                dayCell.classList.add('current-day');
+            }
 
             this.calendarDays.appendChild(dayCell);
         }
